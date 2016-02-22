@@ -12,8 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +40,6 @@ public class ForecastFragment extends Fragment {
     final String TAG = this.getClass().getSimpleName();
     final String cityID = "3871336";
     private ArrayAdapter<String> forecastAdapter;
-    private AsyncTask<String, Void, String[]> data;
 
 
     public ForecastFragment() {
@@ -62,7 +63,7 @@ public class ForecastFragment extends Fragment {
         if (id == R.id.action_refresh){
             Log.i(TAG, "Refresh selected");
             FetchWeatherTask fwt = new FetchWeatherTask();
-            data = fwt.execute(cityID);
+            fwt.execute(cityID);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -100,6 +101,13 @@ public class ForecastFragment extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView_forecast);
         listView.setAdapter(forecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String forecast = forecastAdapter.getItem(position);
+                Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return rootView;
     }
